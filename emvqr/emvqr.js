@@ -25,16 +25,13 @@ function decode(emvString) {
         debug.log('inputText', inputText);
         let { emvItem, remainingText } = readNext(inputText);
         if (emvItem.id == 52) {
-            let translateCode = getObjects(mcc_codes, 'mcc', emvItem.data)
-            emvItem.data = `${emvItem.data} (${translateCode[0].usda_description})`
+            emvItem.data = emvItem.data
         }
         if (emvItem.id == 53 ){
-            let currencyTranslate = getObjects(currencyCode,'number',emvItem.data)
-            emvItem.data = `${emvItem.data} (${currencyTranslate[0].code})`
+            emvItem.data = emvItem.data;
         }
         if(emvItem.id == 58){
-            let countriExplain = getObjects(countries,'Code',emvItem.data)
-            emvItem.data = `${emvItem.data} (${countriExplain[0].Name})`
+            emvItem.data = emvItem.data;
         }
         if (emvItem.name == 'Merchant Account Information') {
             emvItem.data = decodeSubData(emvItem.data)
@@ -179,7 +176,7 @@ function validateChecksum(emvString) {
     debug.log('checksum', checksum);
 
     const expectedCRC = crc.computeCRC(emvData);
-    return expectedCRC === checksum;
+    return expectedCRC.toLowerCase() === checksum.toLowerCase(); // TODO: this is a temp fix
 }
 
 function getObjects(obj, key, val) {
